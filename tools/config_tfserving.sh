@@ -18,7 +18,8 @@ is_gpu=$3
 
 # Pleas modify this mapping when update TFRA.
 declare -A serving_version
-serving_version["master"]="2.8.3"
+serving_version["master"]="2.16.1"
+serving_version["r0.8"]="2.16.1"
 
 # 1. copy directory to tfserving root
 cp -r ../tensorflow_recommenders_addons ${tfserving_root}/
@@ -30,9 +31,9 @@ cat "../WORKSPACE"| tail -n +2 >> ${tfserving_root}/WORKSPACE
 # 3. Padding the tools/run_in_docker.sh
 file="${tfserving_root}/tools/run_in_docker.sh"
 original_docker="tensorflow\/serving:nightly-devel"
-replacement_docker="tfra\/serving:${serving_version[$tfra_branch]}-devel"
+replacement_docker="tensorflow\/serving:${serving_version[$tfra_branch]}-devel"
 if [[ "$is_gpu" == "1" ]]; then
-  replacement_docker="tfra\/serving:${serving_version[$tfra_branch]}-devel-gpu"
+  replacement_docker="tensorflow\/serving:${serving_version[$tfra_branch]}-devel-gpu"
 fi
 
 sed -i "s/$original_docker/$replacement_docker/g" $file

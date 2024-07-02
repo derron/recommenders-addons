@@ -19,6 +19,7 @@ custom_op_library(
     ] + glob(["kernels/lookup_impl/lookup_table_op_cpu*"]),
     deps = [
         "//tensorflow_recommenders_addons/dynamic_embedding/core/lib/cuckoo:cuckoohash",
+        "@org_tensorflow//tensorflow/core/kernels:lookup",
     ],
 )
 
@@ -55,21 +56,15 @@ custom_op_library(
     deps = [
         "@hiredis",
         "@redis-plus-plus//:redis-plus-plus",
+        "@org_tensorflow//tensorflow/core/kernels:lookup",
     ],
 )
 
 custom_op_library(
     name = "_math_ops.so",
     srcs = [
-        "kernels/segment_reduction_ops.h",
-        "kernels/segment_reduction_ops_impl.cc",
-        "kernels/segment_reduction_ops_impl.h",
         "ops/math_ops.cc",
         "utils/utils.h",
-    ],
-    cuda_srcs = [
-        "kernels/segment_reduction_ops.h",
-        "kernels/segment_reduction_ops_gpu.cu.cc",
     ],
 )
 
@@ -114,5 +109,6 @@ custom_cuda_op_library(
     ]) + glob(["kernels/lookup_impl/lookup_table_op_hkv*"]),
     deps = [
         "//tensorflow_recommenders_addons/dynamic_embedding/core/lib/cuckoo:cuckoohash",
+        "@org_tensorflow//tensorflow/core/kernels:lookup",
     ],
 )
