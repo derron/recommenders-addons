@@ -7,7 +7,6 @@ load(
 )
 load(
     "@local_config_cuda//cuda:build_defs.bzl",
-    "cuda_is_configured",
     "if_cuda",
     "if_cuda_is_configured",
 )
@@ -20,8 +19,7 @@ def custom_cuda_op_library(
         cuda_deps = [],
         copts = [],
         **kwargs):
-    if cuda_is_configured():
-        custom_op_library(name, srcs, cuda_srcs, deps, cuda_deps, copts, **kwargs)
+    if_cuda_is_configured(custom_op_library(name, srcs, cuda_srcs, deps, cuda_deps, copts, **kwargs))
 
 def custom_op_library(
         name,
@@ -33,7 +31,8 @@ def custom_op_library(
         **kwargs):
     if FOR_TF_SERVING == "1":
         deps = deps + [
-            "@local_config_tf//:tf_header_lib",
+            "@org_tensorflow//tensorflow/core:framework",
+            "@org_tensorflow//tensorflow/core:lib",
         ]
     else:
         deps = deps + [
@@ -69,8 +68,8 @@ def custom_op_library(
         copts = copts + if_cuda(["-DGOOGLE_CUDA=1"])
         cuda_copts = copts + if_cuda_is_configured([
             "-x cuda",
-            "-nvcc_options=relaxed-constexpr",
-            "-nvcc_options=ftz=true",
+#            "-nvcc_options=relaxed-constexpr",
+#            "-nvcc_options=ftz=true",
         ])
         cuda_deps = deps + if_cuda_is_configured(cuda_deps) + if_cuda_is_configured([
             "@local_config_cuda//cuda:cuda_headers",
